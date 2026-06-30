@@ -1,7 +1,7 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <div align="center">
 
-<img src="./makima.jpg" alt="ArkLoop" width="640" />
+<img src="./makima.jpg" alt="ArkLoop" width="160" />
 
 # ArkLoop
 
@@ -110,3 +110,6 @@ timelines/              用户时间轴（运行时生成，已 gitignore）
 - [yuanyan3060/Arknights-Tile-Pos](https://github.com/yuanyan3060/Arknights-Tile-Pos) — 地图坐标数据
 - [yuanyan3060/ArknightsGameResource](https://github.com/yuanyan3060/ArknightsGameResource) — 干员头像等游戏资源
 - [Windsland52/ArknightsAutoOperator](https://github.com/Windsland52/ArknightsAutoOperator) — 帧级自动操作与费用条计时参考
+- [MaaAssistantArknights](https://github.com/MaaAssistantArknights/MaaAssistantArknights) — 地图数据（`Arknights-Tile-Pos`）与粗流程参照
+- [ArknightsCostBarRuler](https://github.com/ZeroAd-06/ArknightsCostBarRuler) — 费用条计时 / 悬浮窗 / 打轴对轴参考
+- [prts-plus](https://github.com/jue-ce-zhe/prts-plus) — 帧级自动操作的执行器算法（action / 投影 / 配置）
