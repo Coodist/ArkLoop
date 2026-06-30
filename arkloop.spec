@@ -15,6 +15,10 @@ hiddenimports += collect_submodules('webview')
 hiddenimports += collect_submodules('clr_loader')
 hiddenimports += ['pythonnet']
 hiddenimports += maa_hiddenimports
+# NumPy 2.x 需要显式收集 _core 子模块，否则打包后会报
+# No module named 'numpy._core._exceptions' 等 C-ext 导入错误。
+hiddenimports += collect_submodules('numpy._core')
+hiddenimports += collect_submodules('numpy.lib')
 
 datas = [
     ('ui/dist',             'ui/dist'),
