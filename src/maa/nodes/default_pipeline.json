@@ -1,0 +1,10 @@
+{
+    // 节点默认参数。MAA Resource 加载本 bundle 时自动读取。
+    // OCR 模型从 resource/base/model/ocr 加载（由 tools/configure.py 从 MaaCommonAssets 拷入）。
+    "Default": {
+        "rate_limit": 0,
+        "timeout": 20000,
+        "pre_delay": 0,
+        "post_delay": 0
+    }
+}
