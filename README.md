@@ -1,142 +1,112 @@
-# ArkLoop（PRTS+）使用说明
+<!-- markdownlint-disable MD033 MD041 -->
+<div align="center">
 
-明日方舟 MuMu12 模拟器作战轴录制与回放工具。支持录制操作轴、自动执行轴、续录、轴编辑。
+<img src="./makima.jpg" alt="ArkLoop" width="640" />
+
+# ArkLoop
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white" />
+  <img alt="Platform" src="https://img.shields.io/badge/platform-Windows-blue" />
+  <img alt="MaaFramework" src="https://img.shields.io/badge/MaaFramework-powered-7C3AED" />
+  <img alt="PyWebview" src="https://img.shields.io/badge/UI-PyWebview%20%2B%20React-3B82F6" />
+  <br>
+  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/github/license/Coodist/ArkLoop" /></a>
+  <a href="https://github.com/Coodist/ArkLoop/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/Coodist/ArkLoop?style=social" /></a>
+</p>
+
+明日方舟 MuMu12 模拟器帧级作战轴录制与回放工具<br>
+支持录制操作轴、自动执行轴、续录、轴编辑与截图辅助<br>
+<a href="https://github.com/Coodist/ArkLoop" target="_blank"><b>🔗 本项目 GitHub 仓库</b></a><br>
+如果这个项目对你有帮助，欢迎在仓库右上角点个 Star ⭐
+
+</div>
 
 ---
+
+> 📖 **详细使用说明请查看 [HOWTOUSE.md](./HOWTOUSE.md)**
+>
+> 本篇 README 只包含项目概览、开发构建与鸣谢信息。
+
+## 功能
+
+- **录制轴**：在 MuMu12 中实时录制部署 / 技能 / 撤退操作，自动生成时间轴
+- **执行轴**：加载已有时间轴，按帧级精度自动复刻操作
+- **续录轴**：执行或暂停后可继续录制，方便分段摸索
+- **轴编辑**：可视化时间轴编辑器，支持新建、编辑、删除、拖动操作节点
+- **截图辅助**：选中轴并进图后可截取带坐标标注的游戏画面
+- **循环凹图**：配合断点与重试逻辑反复执行同一轴
 
 ## 快速开始
 
-### 一、准备环境
+```powershell
+# 克隆仓库
+git clone https://github.com/Coodist/ArkLoop.git
+cd ArkLoop
 
-- Windows 11
-- MuMu12 模拟器（**不要使用多开器打开**，直接从安装目录或桌面图标启动）
+# 安装 Python 依赖
+.venv\Scripts\python -m pip install -r requirements.txt
 
-### 二、首次启动步骤
+# 构建前端
+cd ui
+npm install
+npm run build
+cd ..
 
-**1. 配置 MuMu**
+# 运行桌面端
+.venv\Scripts\python scripts\arkloop_webview.py
+```
 
-打开 MuMu12，进入设置：
+打包为独立 EXE：
 
-- 分辨率设置为 **1280×720**
-- 渲染模式设置为 **DirectX**
-- 进入"按键设置"，导入 `PRTS+键鼠方案示例.json`，保存后重启 MuMu
+```powershell
+powershell -ExecutionPolicy Bypass -File build_arkloop.ps1
+```
 
-  > 键鼠方案仅绑定了**鼠标后退键（XBUTTON1）= 暂停/取消选中**和**鼠标前进键（XBUTTON2）= 继续/暂停切换**两个按键，其余键位保持你自己的配置不变。若不想导入方案，也可只手动绑定这两个鼠标侧键到对应功能。
+输出位置：
 
-**2. 配置工具**
+```text
+dist\ArkLoop\ArkLoop.exe
+```
 
-启动 `ArkLoop.exe`，点击左上角设置（⚙），按以下说明填写：
+## 项目结构
 
-| 项目 | 填写方式 |
-|---|---|
-| MuMu 安装路径 | 打开文件资源管理器，进入 MuMu 安装目录（如 `D:\Program Files\Netease\MuMu Player 12`），复制地址栏路径粘贴进来 |
-| MuMu 父窗口名 | 将 MuMu 最小化到任务栏，鼠标悬停在任务栏图标上看到的窗口标题（通常是 `MuMu模拟器12`） |
-| 子窗口名 | 确保 MuMu 已运行，双击运行 `mumu_sub_windows.cmd`，在输出结果中找到左侧以 `Qt` 开头、右侧**不是** `nemuplay` 的那个窗口标题（如 `MuMuPlayer` 或 `MuMuPlayer1`）填入 |
+```text
+scripts/                正式入口
+  arkloop_webview.py    PyWebview 桌面端主入口
+  calibrate.py          费用条校准工具
+  run.py                旧版 CLI 回放入口
+src/                    核心逻辑
+  mumu/                 MuMu 模拟器连接、截图、输入注入
+  frame/                费用条检测、暂停检测、帧源
+  logic/                坐标投影、动作执行、时间源
+  axis/                 轴执行器、JSON 加载
+  maa/                  MAA 识别相关配置与节点
+recorder/               实时录制后端与动作识别
+ui/                     React + Vite + Tailwind 时间轴编辑器
+test_scripts/           开发调试脚本
+tools/                  资源同步与预处理脚本
+resource/               游戏数据：头像、地图、干员/关卡映射表
+calibration/            费用条校准文件
+timelines/              用户时间轴（运行时生成，已 gitignore）
+```
 
-> **句柄 / 截图模式**选项无需修改，保持默认即可。配置保存后无需重启工具。
+## 日志
 
-**3. 验证可用性（sample 轴）**
+运行 `ArkLoop.exe` 或 `scripts\arkloop_webview.py` 时，日志会输出到伴随的黑色命令行窗口中。调试截图与 ROI 图片默认写入 `debug/` 目录（已 gitignore）。
 
-携带以下干员进入 **1-7**，在关卡开始界面暂停后：
+## 鸣谢
 
-- 斑点
-- Castle-3
-- 克洛丝
-- 芬
-- Lancet-2
+### 依赖
 
-在工具侧边栏找到 `sample1-7`，点击绿色三角执行，观察是否能顺利完成关卡。
+- [MaaFramework](https://github.com/MaaXYZ/MaaFramework) — 图像识别自动化框架
+- [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) — OCR 识别
+- [PyWebview](https://pywebview.flowrl.com/) — 桌面 WebView 容器
+- [React](https://react.dev/) / [Vite](https://vitejs.dev/) / [Tailwind CSS](https://tailwindcss.com/) — 前端编辑器
+- [Python](https://www.python.org/) / [OpenCV](https://opencv.org/) / [NumPy](https://numpy.org/) / [Pillow](https://python-pillow.org/)
 
----
+### 参考项目
 
-## 主要功能
-
-| 操作 | 说明 |
-|---|---|
-| **录制轴** | 点击 🔴 红色圆点开始录制，🟥 红色方形结束录制 |
-| **执行轴** | 选中轴，进图后暂停，点击 ▶ 绿色三角执行；🟥 红色方形停止执行 |
-| **续录轴** | 轴执行完毕（或暂停）后，可点击录制继续接着录 |
-| **编辑轴** | 双击轨道空白处新建操作；右键已有操作可编辑或删除；拖动操作可调整时间点 |
-| **暂停/恢复** | 执行或录制过程中可暂停，之后可选择继续执行或继续录制 |
-| **截图辅助** | 选中轴并进图后，点击截图按钮，可查看当前地图各格子的坐标标注 |
-
----
-
-## 常见场景
-
-**反复跑一段固定轴**
-录制一次 → 之后每次点执行即可。
-
-**凹开局轴**
-录制一段开局操作 → 反复执行 → 满意后在关键时机暂停 → 点击继续录制接着摸后续。
-
-**前段已定型、后段还在摸索**
-每次先 Duplicate（复制）一份当前轴 → 执行到已定型的末尾 → 继续录制新操作。
-
----
-
-## 注意事项 & 已知 Bug
-
-### 简版操作提示（先看这里）
-
-1. **录制前先让 MuMu 窗口获得焦点**：开始录制后，若想在 MuMu 中操作，先点击两下地图无干员区域，确保焦点回到 MuMu 再进行后续操作，否则偶发部署识别失败。
-
-2. **录制中不要移动 MuMu 窗口**：录制过程中拖动窗口会导致坐标偏移，轴将无法正确执行。
-
-3. **部署时鼠标拖到格子中心**：格子判定区边缘存在重叠缓冲区，鼠标越靠近中心，部署落点越准确；如判定不准可手动编辑修正。
-
-4. **干员头像显示为 `???`**：说明该操作的干员头像识别失败（常见于黑色占比大的皮肤或特种小车类单位）。找到该操作，删除后手动补充一个正确操作。
-
-5. **技能未就绪不要频繁点击**：点击判定基于鼠标区域，误点会被录制为技能操作导致轴错乱。
-
-6. **工具暂停按钮尽量在游戏时间流动时使用**：暂停会触发一次 ESC 键，若游戏本身已暂停，反而会意外恢复。
-
-7. **暂停时避免点击场上有干员的区域**：会误触发"进入选中视角"的判断逻辑。
-
-8. **不要点击被详情面板遮挡的干员**：选中失败会引发后续状态错误。
-
-9. **断点与自动进图功能暂不稳定，建议不要使用。**
-
----
-
-### 完整说明（含 Bug 原理）
-
-**Bug 1：点击工具后直接在 MuMu 内操作偶发部署识别失败**
-
-原理：鼠标焦点未在 MuMu 窗口时，部分操作事件无法被录制端正确捕获，导致头像识别缺少必要帧。先点击 MuMu 窗口内无干员的空旷区域（如地图边缘）再操作可规避。
-
-**Bug 2：录制中拖动 MuMu 窗口导致执行偏移**
-
-原理：录制时鼠标坐标以屏幕绝对位置记录，窗口移动后坐标系发生偏移，导致之前所有操作的落点错位。录制期间始终保持 MuMu 窗口位置固定。
-
-**Bug 3：部署格子判定边缘重叠**
-
-原理：明日方舟格子真实判定区之间存在缓冲带，程序无法精确区分边界附近的落点归属。拖动时尽量落在格子正中央；若出现错位，在轴编辑器中手动调整位置字段。
-
-**Bug 4：干员头像识别失败（显示为 `???`）**
-
-原理：头像识别依赖模板匹配，黑色大面积皮肤（如特种小车）或部分稀有干员因与预置模板差距过大导致置信度不足。识别失败的操作以 `???` + 空白头像记录在轴上，方向/位置信息仍然保留，但需要人工确认后删除并补录正确操作。
-
-**Bug 5：技能误触录制**
-
-原理：录制端判断技能操作的依据是鼠标点击落在已部署干员的区域内，与技能是否就绪无关。在技能 CD 中反复点击同样会被记录为技能操作，执行时如技能未就绪会产生无效点击或状态混乱。
-
-**Bug 6：工具暂停在游戏已暂停时反向触发**
-
-原理：工具的暂停/恢复均通过模拟按键实现，若游戏当前已处于暂停状态，再次触发会恢复游戏而非保持暂停。后续版本计划优化为先检测当前状态再决定是否发送按键。
-
-**Bug 7：暂停时点击场上干员触发选中视角**
-
-原理：暂停状态下点击场上有干员的格子，游戏会进入"选中干员"状态，录制端会将后续拖动误判为撤退或技能操作，导致轴内容错误。暂停时避免点击场上干员区域。
-
-**Bug 8：断点 / 自动进图功能不稳定**
-
-开发中功能，存在多个已知问题，暂不建议在实际使用中依赖。
-
----
-
-如遇到上述说明未覆盖的新 Bug，请保存以下内容后联系 **@断言**：
-
-- 运行 `ArkLoop.exe` 时弹出的命令行窗口日志（截图或复制）
-- Bug 触发的具体步骤（尽量可复现）
-- MuMu 模拟器与工具界面的截图
+- [yuanyan3060/Arknights-Tile-Pos](https://github.com/yuanyan3060/Arknights-Tile-Pos) — 地图坐标数据
+- [yuanyan3060/ArknightsGameResource](https://github.com/yuanyan3060/ArknightsGameResource) — 干员头像等游戏资源
+- [Windsland52/ArknightsAutoOperator](https://github.com/Windsland52/ArknightsAutoOperator) — 帧级自动操作与费用条计时参考

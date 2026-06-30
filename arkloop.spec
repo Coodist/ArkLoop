@@ -73,7 +73,7 @@ coll = COLLECT(
 # be copied separately after COLLECT.
 import shutil as _shutil
 _dist_root = os.path.join(DISTPATH, 'ArkLoop')
-for _f in ['list_mumu_windows.cmd', 'README.md', 'PRTS+键鼠方案示例.json']:
+for _f in ['list_mumu_windows.cmd', 'HOWTOUSE.md', 'PRTS+键鼠方案示例.json']:
     if os.path.isfile(_f):
         _shutil.copy(_f, os.path.join(_dist_root, _f))
 
